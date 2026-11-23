@@ -1,0 +1,9 @@
+.DS_Store
+lepes-android/build/
+lepes-android/dist/
+lepes-android/signing/
+*.jks
+*.keystore
+keystore.properties
+lepes-android/web-original/dist/
+node_modules/

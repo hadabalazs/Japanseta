@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#133e35">
+  <meta name="description" content="Egyszerű sétatempó-időzítő. Váltogasd a gyors és lassú sétát hangjelzésre, internet nélkül is.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Lépés – Séta a saját tempódban</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="header">
+      <a class="brand" href="./" aria-label="Lépés kezdőlap"><img src="./icon.svg" width="44" height="44" alt=""><span>Lépés</span></a>
+      <span id="offline-status" class="offline" role="status">Előkészítés…</span>
+    </header>
+    <main>
+      <div id="intro" class="intro">
+        <h1 class="sr-only">Lépés – sétatempó-időzítő</h1>
+        <button id="start-walk" class="start-circle" type="button" aria-describedby="start-summary start-status" disabled><svg viewBox="0 0 40 40" width="42" height="42" aria-hidden="true"><path d="M12 7v26l23-13z" fill="currentColor"/></svg><span id="start-label">Indulhat<br>a séta</span></button>
+        <p id="start-summary">3 perc gyors · 3 perc lassú</p>
+        <p id="start-status" class="helper" role="status">Hang előkészítése…</p>
+      </div>
+      <p id="message" class="message" role="status"></p>
+      <section id="setup" class="setup" aria-labelledby="setup-title">
+        <h2 id="setup-title"><span class="step">1</span>Állítsd be az időt!</h2>
+        <div class="pace-grid">
+          <div class="pace-card fast-card"><label for="fast-minutes"><span class="pace-mark" aria-hidden="true">»</span>Gyors séta</label><p>Kicsit lendületesebben</p><div class="stepper"><button type="button" data-adjust="fast:-1" aria-label="Gyors séta: egy perccel kevesebb">−</button><div class="value"><input id="fast-minutes" type="number" inputmode="numeric" min="1" max="15" step="1" value="3" aria-describedby="duration-help"><span>perc</span></div><button type="button" data-adjust="fast:1" aria-label="Gyors séta: egy perccel több">+</button></div></div>
+          <div class="pace-card slow-card"><label for="slow-minutes"><span class="pace-mark" aria-hidden="true">≈</span>Lassú séta</label><p>Kényelmesen, nyugodtan</p><div class="stepper"><button type="button" data-adjust="slow:-1" aria-label="Lassú séta: egy perccel kevesebb">−</button><div class="value"><input id="slow-minutes" type="number" inputmode="numeric" min="1" max="15" step="1" value="3" aria-describedby="duration-help"><span>perc</span></div><button type="button" data-adjust="slow:1" aria-label="Lassú séta: egy perccel több">+</button></div></div>
+        </div>
+        <p id="duration-help" class="helper">Mindkét időtartam 1–15 perc lehet.</p>
+        <p id="input-error" class="error" role="alert" hidden></p>
+        <h2 class="start-heading"><span class="step">2</span>Próbáld ki a hangot!</h2>
+        <button id="sound-test" class="secondary sound-test" type="button"><span aria-hidden="true">♫</span> Hang kipróbálása</button>
+        <p id="sound-status" class="helper" role="status">Két rövid hang: gyors séta. Egy hosszú hang: lassú séta.</p>
+        <h2><span class="step">3</span>Indítsd el a sétát!</h2>
+        <p class="helper">Érintsd meg a fenti nagy, kerek „Indulhat a séta” gombot. A hang jelzi, mikor válts tempót.</p>
+      </section>
+      <section id="walk" class="walk" aria-labelledby="phase-title" hidden>
+        <p id="walk-status" class="eyebrow" role="status">SÉTA FOLYAMATBAN</p>
+        <h1 id="phase-title">Gyors séta</h1>
+        <p id="phase-instruction">Sétálj egy kicsit lendületesebben.</p>
+        <div class="clock"><svg viewBox="0 0 240 240" aria-hidden="true"><circle class="track" cx="120" cy="120" r="108"/><circle id="progress-ring" class="progress" cx="120" cy="120" r="108" pathLength="100"/></svg><div class="clock-text"><span id="countdown" role="timer" aria-live="off">03:00</span><span>van hátra</span></div></div>
+        <p id="next-pace" class="next-pace">Utána: lassú séta · 3 perc</p>
+        <p id="phase-announcement" class="sr-only" role="status" aria-live="polite"></p>
+      </section>
+      <div id="walk-actions" class="actions" hidden><button id="main-action" class="primary" type="button" disabled>Szünet</button><button id="stop" class="secondary" type="button" hidden>Séta befejezése</button></div>
+      <div class="options">
+        <label class="option"><input type="checkbox" id="keep-awake" checked><span><strong>Képernyő maradjon bekapcsolva</strong><small id="wake-status">Így megbízhatóbban hallhatók a jelzések.</small></span></label>
+        <label class="option" id="vibration-option"><input type="checkbox" id="vibration"><span><strong>Rezgés is jelezzen</strong><small id="vibration-help">Támogatott telefonon, bekapcsolt képernyőn.</small></span></label>
+      </div>
+      <aside class="notice"><strong>A telefont inkább ne zárd le.</strong><p>Lezárt képernyőn a hang megszakadhat. Ez a működés valódi telefonokon még nincs ellenőrizve.</p></aside>
+      <div id="update-banner" class="update" hidden><p>Új változat érhető el.</p><button id="update" class="secondary" type="button">Frissítés</button><small id="update-help"></small></div>
+      <details class="help"><summary>Használat és tudnivalók</summary><div>
+        <h3>Hogyan használjam?</h3><p>Állítsd be a gyors és a lassú séta hosszát, próbáld ki a hangot, majd érintsd meg a fenti kerek „Indulhat a séta” gombot. A séta gyors tempóval kezdődik, és addig ismétlődik, amíg be nem fejezed.</p>
+        <h3>Nem hallom a hangot.</h3><p>Emeld meg a telefon médiahangerejét, és ellenőrizd, nem egy csatlakoztatott fülhallgatón szól-e. A hangpróba először két rövid, majd egy hosszú hangot játszik. Más alkalmazás zenéje leállhat.</p>
+        <h3>Internet nélkül is működik?</h3><p>Igen, ha felül már megjelent az „Offline használatra kész” felirat. Az első megnyitáshoz internet kell. A telefon tárhelyének vagy böngészési adatainak törlése után újra meg kell nyitni internetkapcsolattal.</p>
+        <h3>Hogyan kerüljön a kezdőképernyőre?</h3><p>Androidon a böngésző menüjében válaszd az „Alkalmazás telepítése” vagy „Hozzáadás a kezdőképernyőhöz” lehetőséget. iPhone-on Safariban nyisd meg a Megosztás menüt, majd a „Főképernyőhöz adás” lehetőséget. Az elnevezések eltérhetnek.</p>
+        <button id="install-help" type="button" class="secondary">Telepítési útmutató megnyitása</button>
+        <h3>Mi történik hívás vagy megszakítás után?</h3><p>Ellenőrizd a képernyőt. Ha a lejátszás szünetel, a „Séta folytatása” gombbal indulhatsz tovább. Az alkalmazás újranyitásakor új sétát kell indítani.</p>
+        <h3>Hol vannak az adataim?</h3><p>A beállítások csak ezen a készüléken maradnak. Nincs regisztráció vagy adatküldés. A hang a készüléken készül, ideiglenesen; nem kerül a Letöltések közé.</p>
+      </div></details>
+      <noscript><p class="error">A használathoz engedélyezd a JavaScriptet a böngészőben.</p></noscript>
+    </main>
+    <footer>Lépés <span aria-hidden="true">·</span> A te tempód, a te sétád.</footer>
+  </div>
+  <dialog id="install-dialog" aria-labelledby="install-title" aria-describedby="install-description">
+    <div class="install-content">
+      <h2 id="install-title" tabindex="-1">Legyen egy saját ikonod!</h2>
+      <p id="install-description">Tedd a Lépést a kezdőképernyőre. Legközelebb egy érintéssel megnyithatod.</p>
+      <div class="device-choice" role="group" aria-label="Milyen telefonod van?"><button id="guide-android" type="button" aria-pressed="true">Android</button><button id="guide-ios" type="button" aria-pressed="false">iPhone</button></div>
+      <div id="install-instructions" aria-live="polite"></div>
+      <p class="illustration-note">Szemléltető ábra. A menü a telefonodon eltérhet.</p>
+      <button id="install" type="button" class="primary" hidden>Telepítés egy érintéssel</button>
+    </div>
+    <div class="install-footer"><div class="guide-navigation"><button id="guide-back" type="button" class="secondary">Vissza</button><button id="guide-next" type="button" class="primary">Következő lépés</button></div><button id="dismiss-install" type="button" class="skip-install">Most kihagyom</button></div>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,11 @@
+import { cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const target = new URL('./dist/', import.meta.url);
+await mkdir(target, { recursive: true });
+await cp(new URL('./src/', import.meta.url), target, { recursive: true });
+const hash = createHash('sha256');
+for (const name of (await readdir(new URL('./src/', import.meta.url))).sort()) hash.update(await readFile(new URL(`./src/${name}`, import.meta.url)));
+const version = hash.digest('hex').slice(0, 12);
+const sw = await readFile(new URL('./src/sw.js', import.meta.url), 'utf8');
+await writeFile(new URL('sw.js', target), sw.replace("'lepes-v1'", `'lepes-${version}'`));
+console.log('Built standalone dist: no dependencies or server required.');
