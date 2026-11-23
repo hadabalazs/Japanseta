@@ -4,7 +4,9 @@ Androidos telefonra való (iPhone-ra nem). Kb. 2 perc az egész.
 
 ## 1. Töltsd le
 
-Nyisd meg a telefonon ezt a linket: **[LINK]**
+Nyisd meg a telefonon ezt a linket:
+
+**https://github.com/hadabalazs/Japanseta/releases/latest/download/lepes.apk**
 
 Ha a telefon megkérdezi, hogy biztosan letöltöd-e, érintsd meg a **Letöltés** gombot.
 

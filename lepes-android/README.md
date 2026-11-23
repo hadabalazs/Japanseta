@@ -91,8 +91,14 @@ running `./build.sh`, or it will silently create a new, incompatible key.
 1. Make the changes (UI in `assets/`, native code in `src/`).
 2. In `AndroidManifest.xml` increase `android:versionCode` (integer, +1) and set `android:versionName`.
 3. `./build.sh`
-4. Test (see below), then distribute `dist/lepes.apk`. Users install it over the old version; settings
-   are kept.
+4. Test (see below), commit, then publish a GitHub release with the APK attached (tag = version):
+   ```bash
+   gh release create v1.0.1 dist/lepes.apk --title "Lépés 1.0.1 (Android)" --notes "What changed" --latest
+   ```
+   The asset must be named `lepes.apk`: the permanent download link
+   https://github.com/hadabalazs/Japanseta/releases/latest/download/lepes.apk always serves the newest
+   release, so links already sent to users keep working. Users install it over the old version;
+   settings are kept.
 
 Quick UI check in a desktop browser: open `assets/index.html` through any local web server. Without
 the native bridge `app.js` uses a built-in stub (timer runs, no sound).
@@ -129,6 +135,8 @@ and aggressive OEM battery managers (Xiaomi, Samsung, Huawei).
 
 ## Distributing
 
-Share `dist/lepes.apk` via a download link (Google Drive, Netlify, own site). Email attachments may be
-blocked. Send `TELEPITES.md` (Hungarian, non-technical install steps) along with it, with `[LINK]`
-replaced. iPhone users need the PWA (`web-original/`) instead.
+Send people the permanent link (always the newest release):
+https://github.com/hadabalazs/Japanseta/releases/latest/download/lepes.apk
+together with `TELEPITES.md` (Hungarian, non-technical install steps; already contains this link).
+Email attachments of `.apk` files may be blocked, so prefer the link. iPhone users need the PWA
+(`web-original/`) instead.
